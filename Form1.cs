@@ -6,7 +6,14 @@ namespace ChessGame_v1
         public Form1()
         {
             InitializeComponent();
+            
             Game = new Game(this);
+        }
+
+        public void SetTransparency()
+        {
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            BackColor = Color.Transparent;
         }
 
         private void StartNewGameBtn_Click(object sender, EventArgs e)

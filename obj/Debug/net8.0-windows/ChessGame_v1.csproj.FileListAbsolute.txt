@@ -15,3 +15,4 @@ C:\Users\Yahu\source\repos\ChessGame_v1\ChessGame_v1\obj\Debug\net8.0-windows\re
 C:\Users\Yahu\source\repos\ChessGame_v1\ChessGame_v1\obj\Debug\net8.0-windows\ChessGame_v1.pdb
 C:\Users\Yahu\source\repos\ChessGame_v1\ChessGame_v1\obj\Debug\net8.0-windows\ChessGame_v1.genruntimeconfig.cache
 C:\Users\Yahu\source\repos\ChessGame_v1\ChessGame_v1\obj\Debug\net8.0-windows\ref\ChessGame_v1.dll
+C:\Users\Yahu\source\repos\ChessGame_v1\ChessGame_v1\obj\Debug\net8.0-windows\ChessGame_v1.sourcelink.json

@@ -4,5 +4,26 @@
     <Compile Update="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Pieces\Bishop.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Pieces\King.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Pieces\Knight.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Pieces\Pawn.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Pieces\Piece.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Pieces\Queen.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Pieces\Rook.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

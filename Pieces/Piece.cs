@@ -6,14 +6,21 @@ using System.Threading.Tasks;
 
 namespace ChessGame_v1.Pieces;
 
-public abstract class Piece
+public abstract class Piece : PictureBox
 {
-    public bool Color { get; set; }
+    public bool Color { get; set; } // false - whithe, true - black
     public Position ActualPosition { get; set; }
     public bool Exists { get; set; } = true;
     public bool IsActive { get; set; } = false;
     public abstract Image PieceNotSelectedImagePath { get; set; }
     public abstract Image PieceSelectedImagePath { get; set; }
-    //public List<Position> PossiblePositionsForNextMove { get; set; }
-    //public abstract Position ChangePosition(Piece piece, Position newPosition);
+    public Piece()
+    {
+        BackColor = System.Drawing.Color.Transparent;
+        Size = new Size(90, 90);
+    }
+
+    public abstract List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces);
+
+
 }
