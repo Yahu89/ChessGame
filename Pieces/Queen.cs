@@ -31,4 +31,10 @@ public class Queen : Piece
     {
         throw new NotImplementedException();
     }
+
+
+    public override Piece DeepCopy(Piece piece, bool color)
+    {
+        return new Queen(color);
+    }
 }

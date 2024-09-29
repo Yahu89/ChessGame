@@ -31,4 +31,14 @@ public class King : Piece
     {
         throw new NotImplementedException();
     }
+
+    //public override void ChangePosition(Position newPosition, Position oldPosition, Piece piece, Form1 form)
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    public override Piece DeepCopy(Piece piece, bool color)
+    {
+        return new King(color);
+    }
 }

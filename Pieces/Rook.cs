@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace ChessGame_v1.Pieces;
 
 public class Rook : Piece
@@ -37,14 +31,7 @@ public class Rook : Piece
         {
             if (pieces[i, ActualPosition.Y] is null)
             {
-                pictureBoxes.Add(new PictureBox()
-                {
-                    BackgroundImage = ChessBoard.PossiblePositionImage,
-                    BackgroundImageLayout = ImageLayout.Tile,
-                    Location = ChessBoard.CalculatePointFromPosition(new Position(i, ActualPosition.Y)),
-                    Size = new Size(90, 90),
-                    BackColor = System.Drawing.Color.Transparent
-                });
+                CreateNewPositionHelper(i, ActualPosition.Y, pictureBoxes);
             }
             else
             {
@@ -60,15 +47,7 @@ public class Rook : Piece
                     }
                     else
                     {
-                        pictureBoxes.Add(new PictureBox()
-                        {
-                            BackgroundImage = ChessBoard.PossiblePositionImage,
-                            BackgroundImageLayout = ImageLayout.Tile,
-                            Location = ChessBoard.CalculatePointFromPosition(new Position(i, ActualPosition.Y)),
-                            Size = new Size(90, 90),
-                            BackColor = System.Drawing.Color.Transparent
-                        });
-
+                        CreateNewPositionHelper(i, ActualPosition.Y, pictureBoxes);
                         break;
                     }
                 }
@@ -81,14 +60,7 @@ public class Rook : Piece
         {
             if (pieces[i, ActualPosition.Y] is null)
             {
-                pictureBoxes.Add(new PictureBox()
-                {
-                    BackgroundImage = ChessBoard.PossiblePositionImage,
-                    BackgroundImageLayout = ImageLayout.Tile,
-                    Location = ChessBoard.CalculatePointFromPosition(new Position(i, ActualPosition.Y)),
-                    Size = new Size(90, 90),
-                    BackColor = System.Drawing.Color.Transparent
-                });
+                CreateNewPositionHelper(i, ActualPosition.Y, pictureBoxes);
             }
             else
             {
@@ -104,15 +76,7 @@ public class Rook : Piece
                     }
                     else
                     {
-                        pictureBoxes.Add(new PictureBox()
-                        {
-                            BackgroundImage = ChessBoard.PossiblePositionImage,
-                            BackgroundImageLayout = ImageLayout.Tile,
-                            Location = ChessBoard.CalculatePointFromPosition(new Position(i, ActualPosition.Y)),
-                            Size = new Size(90, 90),
-                            BackColor = System.Drawing.Color.Transparent
-                        });
-
+                        CreateNewPositionHelper(i, ActualPosition.Y, pictureBoxes);
                         break;
                     }
                 }
@@ -125,14 +89,7 @@ public class Rook : Piece
         {
             if (pieces[ActualPosition.X, i] is null)
             {
-                pictureBoxes.Add(new PictureBox()
-                {
-                    BackgroundImage = ChessBoard.PossiblePositionImage,
-                    BackgroundImageLayout = ImageLayout.Tile,
-                    Location = ChessBoard.CalculatePointFromPosition(new Position(ActualPosition.X, i)),
-                    Size = new Size(90, 90),
-                    BackColor = System.Drawing.Color.Transparent
-                });
+                CreateNewPositionHelper(ActualPosition.X, i, pictureBoxes);
             }
             else
             {
@@ -148,15 +105,7 @@ public class Rook : Piece
                     }
                     else
                     {
-                        pictureBoxes.Add(new PictureBox()
-                        {
-                            BackgroundImage = ChessBoard.PossiblePositionImage,
-                            BackgroundImageLayout = ImageLayout.Tile,
-                            Location = ChessBoard.CalculatePointFromPosition(new Position(ActualPosition.X, i)),
-                            Size = new Size(90, 90),
-                            BackColor = System.Drawing.Color.Transparent
-                        });
-
+                        CreateNewPositionHelper(ActualPosition.X, i, pictureBoxes);
                         break;
                     }
                 }
@@ -169,14 +118,7 @@ public class Rook : Piece
         {
             if (pieces[ActualPosition.X, i] is null)
             {
-                pictureBoxes.Add(new PictureBox()
-                {
-                    BackgroundImage = ChessBoard.PossiblePositionImage,
-                    BackgroundImageLayout = ImageLayout.Tile,
-                    Location = ChessBoard.CalculatePointFromPosition(new Position(ActualPosition.X, i)),
-                    Size = new Size(90, 90),
-                    BackColor = System.Drawing.Color.Transparent
-                });
+                CreateNewPositionHelper(ActualPosition.X, i, pictureBoxes);
             }
             else
             {
@@ -192,15 +134,7 @@ public class Rook : Piece
                     }
                     else
                     {
-                        pictureBoxes.Add(new PictureBox()
-                        {
-                            BackgroundImage = ChessBoard.PossiblePositionImage,
-                            BackgroundImageLayout = ImageLayout.Tile,
-                            Location = ChessBoard.CalculatePointFromPosition(new Position(ActualPosition.X, i)),
-                            Size = new Size(90, 90),
-                            BackColor = System.Drawing.Color.Transparent
-                        });
-
+                        CreateNewPositionHelper(ActualPosition.X, i, pictureBoxes);
                         break;
                     }
                 }
@@ -209,4 +143,23 @@ public class Rook : Piece
 
         return pictureBoxes;
     }
+
+    public override Piece DeepCopy(Piece piece, bool color)
+    {
+        Piece newRook = new Rook(color)
+        {
+            Color = piece.Color,
+            ActualPosition = piece.ActualPosition 
+        };
+
+        return newRook;
+    }
+
+    //public bool IsCheckForMyself(bool color)
+    //{
+    //    if (color)
+    //    {
+
+    //    }
+    //}
 }

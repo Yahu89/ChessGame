@@ -35,13 +35,12 @@
             // 
             // panel1
             // 
-            panel1.BackgroundImage = (Image)resources.GetObject("panel1.BackgroundImage");
+            panel1.BackgroundImage = Image.FromFile("C:\\Users\\Yahu\\source\\repos\\ChessGame_v1\\ChessGame_v1\\Images\\chessboard.png"); //(Image)resources.GetObject("panel1.BackgroundImage");
             panel1.BackgroundImageLayout = ImageLayout.Stretch;
             panel1.Location = new Point(94, 12);
             panel1.Name = "panel1";
             panel1.Size = new Size(705, 705);
             panel1.TabIndex = 0;
-            //panel1.
             // 
             // StartNewGameBtn
             // 
@@ -57,7 +56,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1013, 729);
+            ClientSize = new Size(1205, 729);
             Controls.Add(StartNewGameBtn);
             Controls.Add(panel1);
             Name = "Form1";

@@ -30,4 +30,9 @@ public class Pawn : Piece
     {
         throw new NotImplementedException();
     }
+
+    public override Piece DeepCopy(Piece piece, bool color)
+    {
+        return new Pawn(color);
+    }
 }
