@@ -29,7 +29,258 @@ public class Queen : Piece
 
     public override List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces)
     {
-        throw new NotImplementedException();
+        List<PictureBox> pictureBoxes = new List<PictureBox>();
+
+        // check positions upstream through the chessboard
+
+        for (int i = ActualPosition.X - 1; i >= 0; i--)
+        {
+            if (pieces[i, ActualPosition.Y] is null)
+            {
+                CreateNewPositionHelper(i, ActualPosition.Y, pictureBoxes);
+            }
+            else
+            {
+                if (pieces[i, ActualPosition.Y].Color == Color)
+                {
+                    break;
+                }
+                else
+                {
+                    if (pieces[i, ActualPosition.Y] is King)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        CreateNewPositionHelper(i, ActualPosition.Y, pictureBoxes);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // check positions downstream through the chessboard
+
+        for (int i = ActualPosition.X + 1; i <= 7; i++)
+        {
+            if (pieces[i, ActualPosition.Y] is null)
+            {
+                CreateNewPositionHelper(i, ActualPosition.Y, pictureBoxes);
+            }
+            else
+            {
+                if (pieces[i, ActualPosition.Y].Color == Color)
+                {
+                    break;
+                }
+                else
+                {
+                    if (pieces[i, ActualPosition.Y] is King)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        CreateNewPositionHelper(i, ActualPosition.Y, pictureBoxes);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // check positions turning right through the chessboard
+
+        for (int i = ActualPosition.Y + 1; i <= 7; i++)
+        {
+            if (pieces[ActualPosition.X, i] is null)
+            {
+                CreateNewPositionHelper(ActualPosition.X, i, pictureBoxes);
+            }
+            else
+            {
+                if (pieces[ActualPosition.X, i].Color == Color)
+                {
+                    break;
+                }
+                else
+                {
+                    if (pieces[ActualPosition.X, i] is King)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        CreateNewPositionHelper(ActualPosition.X, i, pictureBoxes);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // check positions turning left through the chessboard
+
+
+        for (int i = ActualPosition.Y - 1; i >= 0; i--)
+        {
+            if (pieces[ActualPosition.X, i] is null)
+            {
+                CreateNewPositionHelper(ActualPosition.X, i, pictureBoxes);
+            }
+            else
+            {
+                if (pieces[ActualPosition.X, i].Color == Color)
+                {
+                    break;
+                }
+                else
+                {
+                    if (pieces[ActualPosition.X, i] is King)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        CreateNewPositionHelper(ActualPosition.X, i, pictureBoxes);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // check positions upstream right through the chessboard
+
+        int X = ActualPosition.X - 1;
+        int Y = ActualPosition.Y + 1;
+
+        for (; Y <= 7 && X >= 0; Y++)
+        {
+            if (pieces[X, Y] is null)
+            {
+                CreateNewPositionHelper(X, Y, pictureBoxes);
+                X--;
+            }
+            else
+            {
+                if (pieces[X, Y].Color == Color)
+                {
+                    break;
+                }
+                else
+                {
+                    if (pieces[X, Y] is King)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        CreateNewPositionHelper(X, Y, pictureBoxes);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // check positions downstream right through the chessboard
+
+        X = ActualPosition.X + 1;
+        Y = ActualPosition.Y + 1;
+
+        for (; Y <= 7 && X <= 7; Y++)
+        {
+            if (pieces[X, Y] is null)
+            {
+                CreateNewPositionHelper(X, Y, pictureBoxes);
+                X++;
+            }
+            else
+            {
+                if (pieces[X, Y].Color == Color)
+                {
+                    break;
+                }
+                else
+                {
+                    if (pieces[X, Y] is King)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        CreateNewPositionHelper(X, Y, pictureBoxes);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // check positions downstream left through the chessboard
+
+        X = ActualPosition.X + 1;
+        Y = ActualPosition.Y - 1;
+
+        for (; Y >= 0 && X <= 7; Y--)
+        {
+            if (pieces[X, Y] is null)
+            {
+                CreateNewPositionHelper(X, Y, pictureBoxes);
+                X++;
+            }
+            else
+            {
+                if (pieces[X, Y].Color == Color)
+                {
+                    break;
+                }
+                else
+                {
+                    if (pieces[X, Y] is King)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        CreateNewPositionHelper(X, Y, pictureBoxes);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // check positions upstream left through the chessboard
+
+        X = ActualPosition.X - 1;
+        Y = ActualPosition.Y - 1;
+
+        for (; Y >= 0 && X >= 0; Y--)
+        {
+            if (pieces[X, Y] is null)
+            {
+                CreateNewPositionHelper(X, Y, pictureBoxes);
+                X--;
+            }
+            else
+            {
+                if (pieces[X, Y].Color == Color)
+                {
+                    break;
+                }
+                else
+                {
+                    if (pieces[X, Y] is King)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        CreateNewPositionHelper(X, Y, pictureBoxes);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return pictureBoxes;
     }
 
 

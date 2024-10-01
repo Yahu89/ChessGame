@@ -29,16 +29,54 @@ public class King : Piece
 
     public override List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces)
     {
-        throw new NotImplementedException();
-    }
+        List<PictureBox> pictureBoxes = new List<PictureBox>();
 
-    //public override void ChangePosition(Position newPosition, Position oldPosition, Piece piece, Form1 form)
-    //{
-    //    throw new NotImplementedException();
-    //}
+        int x = ActualPosition.X;
+        int y = ActualPosition.Y;
+
+        Position[] possiblePositions = new Position[]
+        {
+            new Position(x - 1, y),
+            new Position(x - 1, y + 1),
+            new Position(x, y + 1),
+            new Position(x + 1, y + 1),
+            new Position(x + 1, y),
+            new Position(x + 1, y - 1),
+            new Position(x, y - 1),
+            new Position(x - 1, y - 1)
+        };
+
+        foreach (var item in possiblePositions)
+        {
+            if (item.X >= 0 && item.X <= 7 && item.Y >= 0 && item.Y <= 7)
+            {
+                if (pieces[item.X, item.Y] == null)
+                {
+                    CreateNewPositionHelper(item.X, item.Y, pictureBoxes);
+                }
+                else if (pieces[item.X, item.Y] is King && pieces[item.X, item.Y].Color != Color)
+                {
+
+                }
+                else if (pieces[item.X, item.Y] != null && pieces[item.X, item.Y].Color != Color)
+                {
+                    CreateNewPositionHelper(item.X, item.Y, pictureBoxes);
+                }
+
+            }
+        }
+
+        return pictureBoxes;
+    }
 
     public override Piece DeepCopy(Piece piece, bool color)
     {
-        return new King(color);
+        Piece newKing = new King(color)
+        {
+            Color = piece.Color,
+            ActualPosition = piece.ActualPosition
+        };
+
+        return newKing;
     }
 }

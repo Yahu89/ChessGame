@@ -34,19 +34,7 @@ public class Bishop : Piece
         {            
             if (pieces[X, Y] is null)
             {
-                var possibleNewChessBoard = ChessBoard.CreateTemporatyPieces(ChessBoard.Pieces);
-                possibleNewChessBoard[X, Y] = pieces[ActualPosition.X, ActualPosition.Y];
-                possibleNewChessBoard[ActualPosition.X, ActualPosition.Y] = null;
-
-                pictureBoxes.Add(new PictureBox()
-                {
-                    BackgroundImage = ChessBoard.PossiblePositionImage,
-                    BackgroundImageLayout = ImageLayout.Tile,
-                    Location = ChessBoard.CalculatePointFromPosition(new Position(X, Y)),
-                    Size = new Size(90, 90),
-                    BackColor = System.Drawing.Color.Transparent
-                });
-
+                CreateNewPositionHelper(X, Y, pictureBoxes);
                 X--;
             }
             else
@@ -63,15 +51,7 @@ public class Bishop : Piece
                     }
                     else
                     {
-                        pictureBoxes.Add(new PictureBox()
-                        {
-                            BackgroundImage = ChessBoard.PossiblePositionImage,
-                            BackgroundImageLayout = ImageLayout.Tile,
-                            Location = ChessBoard.CalculatePointFromPosition(new Position(X, Y)),
-                            Size = new Size(90, 90),
-                            BackColor = System.Drawing.Color.Transparent
-                        });
-
+                        CreateNewPositionHelper(X, Y, pictureBoxes);
                         break;
                     }
                 }
@@ -87,19 +67,7 @@ public class Bishop : Piece
         {
             if (pieces[X, Y] is null)
             {
-                var possibleNewChessBoard = ChessBoard.CreateTemporatyPieces(ChessBoard.Pieces);
-                possibleNewChessBoard[X, Y] = pieces[ActualPosition.X, ActualPosition.Y];
-                possibleNewChessBoard[ActualPosition.X, ActualPosition.Y] = null;
-
-                pictureBoxes.Add(new PictureBox()
-                {
-                    BackgroundImage = ChessBoard.PossiblePositionImage,
-                    BackgroundImageLayout = ImageLayout.Tile,
-                    Location = ChessBoard.CalculatePointFromPosition(new Position(X, Y)),
-                    Size = new Size(90, 90),
-                    BackColor = System.Drawing.Color.Transparent
-                });
-
+                CreateNewPositionHelper(X, Y, pictureBoxes);
                 X++;
             }
             else
@@ -116,15 +84,7 @@ public class Bishop : Piece
                     }
                     else
                     {
-                        pictureBoxes.Add(new PictureBox()
-                        {
-                            BackgroundImage = ChessBoard.PossiblePositionImage,
-                            BackgroundImageLayout = ImageLayout.Tile,
-                            Location = ChessBoard.CalculatePointFromPosition(new Position(X, Y)),
-                            Size = new Size(90, 90),
-                            BackColor = System.Drawing.Color.Transparent
-                        });
-
+                        CreateNewPositionHelper(X, Y, pictureBoxes);
                         break;
                     }
                 }
@@ -140,19 +100,7 @@ public class Bishop : Piece
         {
             if (pieces[X, Y] is null)
             {
-                var possibleNewChessBoard = ChessBoard.CreateTemporatyPieces(ChessBoard.Pieces);
-                possibleNewChessBoard[X, Y] = pieces[ActualPosition.X, ActualPosition.Y];
-                possibleNewChessBoard[ActualPosition.X, ActualPosition.Y] = null;
-
-                pictureBoxes.Add(new PictureBox()
-                {
-                    BackgroundImage = ChessBoard.PossiblePositionImage,
-                    BackgroundImageLayout = ImageLayout.Tile,
-                    Location = ChessBoard.CalculatePointFromPosition(new Position(X, Y)),
-                    Size = new Size(90, 90),
-                    BackColor = System.Drawing.Color.Transparent
-                });
-
+                CreateNewPositionHelper(X, Y, pictureBoxes);
                 X++;
             }
             else
@@ -169,15 +117,7 @@ public class Bishop : Piece
                     }
                     else
                     {
-                        pictureBoxes.Add(new PictureBox()
-                        {
-                            BackgroundImage = ChessBoard.PossiblePositionImage,
-                            BackgroundImageLayout = ImageLayout.Tile,
-                            Location = ChessBoard.CalculatePointFromPosition(new Position(X, Y)),
-                            Size = new Size(90, 90),
-                            BackColor = System.Drawing.Color.Transparent
-                        });
-
+                        CreateNewPositionHelper(X, Y, pictureBoxes);
                         break;
                     }
                 }
@@ -193,19 +133,7 @@ public class Bishop : Piece
         {
             if (pieces[X, Y] is null)
             {
-                var possibleNewChessBoard = ChessBoard.CreateTemporatyPieces(ChessBoard.Pieces);
-                possibleNewChessBoard[X, Y] = pieces[ActualPosition.X, ActualPosition.Y];
-                possibleNewChessBoard[ActualPosition.X, ActualPosition.Y] = null;
-
-                pictureBoxes.Add(new PictureBox()
-                {
-                    BackgroundImage = ChessBoard.PossiblePositionImage,
-                    BackgroundImageLayout = ImageLayout.Tile,
-                    Location = ChessBoard.CalculatePointFromPosition(new Position(X, Y)),
-                    Size = new Size(90, 90),
-                    BackColor = System.Drawing.Color.Transparent
-                });
-
+                CreateNewPositionHelper(X, Y, pictureBoxes);
                 X--;
             }
             else
@@ -222,15 +150,7 @@ public class Bishop : Piece
                     }
                     else
                     {
-                        pictureBoxes.Add(new PictureBox()
-                        {
-                            BackgroundImage = ChessBoard.PossiblePositionImage,
-                            BackgroundImageLayout = ImageLayout.Tile,
-                            Location = ChessBoard.CalculatePointFromPosition(new Position(X, Y)),
-                            Size = new Size(90, 90),
-                            BackColor = System.Drawing.Color.Transparent
-                        });
-
+                        CreateNewPositionHelper(X, Y, pictureBoxes);
                         break;
                     }
                 }

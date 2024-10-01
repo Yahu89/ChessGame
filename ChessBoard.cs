@@ -101,14 +101,17 @@ public class ChessBoard
 
         if (IfAllPiecesUnselected(Pieces))
         {       
-            piece.IsActive = true;
-            piece.BackgroundImage = piece.PieceSelectedImagePath;
-            SelectedPiece = piece;
-            PossiblePositionsForNextMove = piece.PossiblePositionsForNextMove(Pieces);
-            PossiblePositionsForNextMove.ForEach(x => x.MouseClick += Move);
-            PossiblePositionsForNextMove.ForEach(_form.panel1.Controls.Add);
-            PossiblePositionsForNextMove.ForEach(x => x.BringToFront());
-            RemoveEventServiceAfterPieceSelected();
+            if (piece.Color == Game.ColorHasMove)
+            {
+                piece.IsActive = true;
+                piece.BackgroundImage = piece.PieceSelectedImagePath;
+                SelectedPiece = piece;
+                PossiblePositionsForNextMove = piece.PossiblePositionsForNextMove(Pieces);
+                PossiblePositionsForNextMove.ForEach(x => x.MouseClick += Move);
+                PossiblePositionsForNextMove.ForEach(_form.panel1.Controls.Add);
+                PossiblePositionsForNextMove.ForEach(x => x.BringToFront());
+                RemoveEventServiceAfterPieceSelected();
+            }           
         }
         else
         {
@@ -128,7 +131,6 @@ public class ChessBoard
 
     public void Move(object sender, EventArgs e)
     {
-        var temPieces = CreateTemporatyPieces(Pieces);
         var possiblePosition = (PictureBox)sender;
         var newPosition = CalculatePositionFromPoint(possiblePosition.Location);
         var oldPosition = SelectedPiece.ActualPosition;
@@ -138,9 +140,15 @@ public class ChessBoard
         RemovePossiblePositions();
         AddEventServiceWhenAllUnselected();
         SelectedPiece.IsActive = false;
+
+        if (SelectedPiece is Pawn)
+        {
+            var tempSelected = (Pawn)SelectedPiece;
+            tempSelected.IsBeforeFirstMove = false;
+        }
+
         SelectedPiece = null;
-        
-        var actualPieces = Pieces;
+        Game.SwitchPlayerForMove();
     }
 
     public void SetPiecesInStartPosition()
@@ -274,33 +282,6 @@ public class ChessBoard
             Pieces[7, i].MouseClick += SwitchSelectedPiece;
             Pieces[7, i].Tag = Pieces[7, i];
         }
-
-        // ********************************* test only
-
-        Pieces[4, 4] = new Knight(true)
-        {
-            ActualPosition = new Position(4, 4),
-        };
-
-        Pieces[4, 4].BackgroundImage = Pieces[4, 4].PieceNotSelectedImagePath;
-        Pieces[4, 4].Location = CalculatePointFromPosition(Pieces[4, 4].ActualPosition);
-        _form.panel1.Controls.Add(Pieces[4, 4]);
-        Pieces[4, 4].BringToFront();
-        Pieces[4, 4].MouseClick += SwitchSelectedPiece;
-        Pieces[4, 4].Tag = Pieces[4, 4];
-
-
-        Pieces[4, 1] = new Rook(false)
-        {
-            ActualPosition = new Position(4, 1),
-        };
-
-        Pieces[4, 1].BackgroundImage = Pieces[4, 1].PieceNotSelectedImagePath;
-        Pieces[4, 1].Location = CalculatePointFromPosition(Pieces[4, 1].ActualPosition);
-        _form.panel1.Controls.Add(Pieces[4, 1]);
-        Pieces[4, 1].BringToFront();
-        Pieces[4, 1].MouseClick += SwitchSelectedPiece;
-        Pieces[4, 1].Tag = Pieces[4, 1];
     }
 
     public void RemoveEventServiceAfterPieceSelected()

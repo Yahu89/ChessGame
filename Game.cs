@@ -11,6 +11,7 @@ public class Game
 {
     public Form1 Form1 { get; set; }
     public ChessBoard ChessBoard { get; set; }
+    public static bool ColorHasMove { get; set; } = false;
     public Game(Form1 form)
     {
         Form1 = form;
@@ -25,5 +26,10 @@ public class Game
     public void InitializePieces()
     {
         ChessBoard.SetPiecesInStartPosition();
+    }
+
+    public static void SwitchPlayerForMove()
+    {
+        ColorHasMove = !ColorHasMove;
     }
 }

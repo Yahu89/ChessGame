@@ -82,6 +82,12 @@ public class Knight : Piece
 
     public override Piece DeepCopy(Piece piece, bool color)
     {
-        return new Knight(color);
+        Piece newKnight = new Knight(color)
+        {
+            Color = piece.Color,
+            ActualPosition = piece.ActualPosition
+        };
+
+        return newKnight;
     }
 }

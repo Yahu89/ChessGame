@@ -114,6 +114,7 @@ public class Rook : Piece
 
         // check positions turning left through the chessboard
 
+
         for (int i = ActualPosition.Y - 1; i >= 0; i--)
         {
             if (pieces[ActualPosition.X, i] is null)
