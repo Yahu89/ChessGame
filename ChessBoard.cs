@@ -23,7 +23,7 @@ public class ChessBoard
         _form = form;
     }
 
-    public static Piece[,] CreateTemporatyPieces(Piece[,] pieces)
+    public static Piece[,] CreateTemporatyChessBoard(Piece[,] pieces)
     {
         TemporaryPieces = null;
         TemporaryPieces = new Piece[8, 8];

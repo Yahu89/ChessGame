@@ -1,4 +1,6 @@
 ﻿
+using System.Windows.Forms;
+
 namespace ChessGame_v1.Pieces;
 
 public class Rook : Piece
@@ -21,7 +23,7 @@ public class Rook : Piece
         }
     }
 
-    public override List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces)
+    private List<PictureBox> PossiblePositionsWithoutCheckVerify()
     {
         List<PictureBox> pictureBoxes = new List<PictureBox>();
 
@@ -29,19 +31,19 @@ public class Rook : Piece
 
         for (int i = ActualPosition.X - 1; i >= 0; i--)
         {
-            if (pieces[i, ActualPosition.Y] is null)
+            if (ChessBoard.Pieces[i, ActualPosition.Y] is null)
             {
                 CreateNewPositionHelper(i, ActualPosition.Y, pictureBoxes);
             }
             else
             {
-                if (pieces[i, ActualPosition.Y].Color == Color)
+                if (ChessBoard.Pieces[i, ActualPosition.Y].Color == Color)
                 {
                     break;
                 }
                 else
                 {
-                    if (pieces[i, ActualPosition.Y] is King)
+                    if (ChessBoard.Pieces[i, ActualPosition.Y] is King)
                     {
                         break;
                     }
@@ -58,19 +60,19 @@ public class Rook : Piece
 
         for (int i = ActualPosition.X + 1; i <= 7; i++)
         {
-            if (pieces[i, ActualPosition.Y] is null)
+            if (ChessBoard.Pieces[i, ActualPosition.Y] is null)
             {
                 CreateNewPositionHelper(i, ActualPosition.Y, pictureBoxes);
             }
             else
             {
-                if (pieces[i, ActualPosition.Y].Color == Color)
+                if (ChessBoard.Pieces[i, ActualPosition.Y].Color == Color)
                 {
                     break;
                 }
                 else
                 {
-                    if (pieces[i, ActualPosition.Y] is King)
+                    if (ChessBoard.Pieces[i, ActualPosition.Y] is King)
                     {
                         break;
                     }
@@ -87,19 +89,19 @@ public class Rook : Piece
 
         for (int i = ActualPosition.Y + 1; i <= 7; i++)
         {
-            if (pieces[ActualPosition.X, i] is null)
+            if (ChessBoard.Pieces[ActualPosition.X, i] is null)
             {
                 CreateNewPositionHelper(ActualPosition.X, i, pictureBoxes);
             }
             else
             {
-                if (pieces[ActualPosition.X, i].Color == Color)
+                if (ChessBoard.Pieces[ActualPosition.X, i].Color == Color)
                 {
                     break;
                 }
                 else
                 {
-                    if (pieces[ActualPosition.X, i] is King)
+                    if (ChessBoard.Pieces[ActualPosition.X, i] is King)
                     {
                         break;
                     }
@@ -117,19 +119,19 @@ public class Rook : Piece
 
         for (int i = ActualPosition.Y - 1; i >= 0; i--)
         {
-            if (pieces[ActualPosition.X, i] is null)
+            if (ChessBoard.Pieces[ActualPosition.X, i] is null)
             {
                 CreateNewPositionHelper(ActualPosition.X, i, pictureBoxes);
             }
             else
             {
-                if (pieces[ActualPosition.X, i].Color == Color)
+                if (ChessBoard.Pieces[ActualPosition.X, i].Color == Color)
                 {
                     break;
                 }
                 else
                 {
-                    if (pieces[ActualPosition.X, i] is King)
+                    if (ChessBoard.Pieces[ActualPosition.X, i] is King)
                     {
                         break;
                     }
@@ -145,6 +147,32 @@ public class Rook : Piece
         return pictureBoxes;
     }
 
+    public override List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces)
+    {
+        var positionsWithoutCheckVerify = PossiblePositionsWithoutCheckVerify();
+        var finalPossiblePositions = new List<PictureBox>();     
+
+        foreach (var item in positionsWithoutCheckVerify)
+        {
+            var actualChessBoard = ChessBoard.CreateTemporatyChessBoard(ChessBoard.Pieces);
+            var actualKingPosition = KingPosition(actualChessBoard, ChessBoard.SelectedPiece.Color);
+            int x = ChessBoard.CalculatePositionFromPoint(new Point(item.Location.X, item.Location.Y)).X;
+            int y = ChessBoard.CalculatePositionFromPoint(new Point(item.Location.X, item.Location.Y)).Y;
+
+            actualChessBoard[x, y] = ChessBoard.SelectedPiece;
+            actualChessBoard[ActualPosition.X, ActualPosition.Y] = null;
+
+            var isCheckedMyself = IsCheckedMyself(actualChessBoard);
+
+            if (!isCheckedMyself)
+            {
+                finalPossiblePositions.Add(item);
+            }
+        }
+
+        return finalPossiblePositions;
+    }
+
     public override Piece DeepCopy(Piece piece, bool color)
     {
         Piece newRook = new Rook(color)
@@ -155,12 +183,4 @@ public class Rook : Piece
 
         return newRook;
     }
-
-    //public bool IsCheckForMyself(bool color)
-    //{
-    //    if (color)
-    //    {
-
-    //    }
-    //}
 }

@@ -28,7 +28,7 @@ public class Knight : Piece
         }
     }
 
-    public override List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces)
+    private List<PictureBox> PossiblePositionsWithoutCheckVerify()
     {
         List<PictureBox> pictureBoxes = new List<PictureBox>();
 
@@ -53,31 +53,92 @@ public class Knight : Piece
 
             if (isNewPlaceWithinChessBoard)
             {
-                if (pieces[item.X, item.Y] is null)
+                if (ChessBoard.Pieces[item.X, item.Y] is null)
                 {
                     CreateNewPositionHelper(item.X, item.Y, pictureBoxes);
                 }
                 else
                 {
-                    if (pieces[item.X, item.Y].Color != Color)
+                    if (ChessBoard.Pieces[item.X, item.Y].Color != Color)
                     {
-                        if (!(pieces[item.X, item.Y] is King))
+                        if (!(ChessBoard.Pieces[item.X, item.Y] is King))
                         {
-                            pictureBoxes.Add(new PictureBox()
-                            {
-                                BackgroundImage = ChessBoard.PossiblePositionImage,
-                                BackgroundImageLayout = ImageLayout.Tile,
-                                Location = ChessBoard.CalculatePointFromPosition(new Position(item.X, item.Y)),
-                                Size = new Size(90, 90),
-                                BackColor = System.Drawing.Color.Transparent
-                            });
+                            CreateNewPositionHelper(item.X, item.Y, pictureBoxes);
                         }
                     }
                 }
             }
         }
 
-        return pictureBoxes;       
+        return pictureBoxes;
+    }
+
+    public override List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces)
+    {
+        var positionsWithoutCheckVerify = PossiblePositionsWithoutCheckVerify();
+        var finalPossiblePositions = new List<PictureBox>();
+
+        foreach (var item in positionsWithoutCheckVerify)
+        {
+            var actualChessBoard = ChessBoard.CreateTemporatyChessBoard(ChessBoard.Pieces);
+            var actualKingPosition = KingPosition(actualChessBoard, ChessBoard.SelectedPiece.Color);
+            int x = ChessBoard.CalculatePositionFromPoint(new Point(item.Location.X, item.Location.Y)).X;
+            int y = ChessBoard.CalculatePositionFromPoint(new Point(item.Location.X, item.Location.Y)).Y;
+
+            actualChessBoard[x, y] = ChessBoard.SelectedPiece;
+            actualChessBoard[ActualPosition.X, ActualPosition.Y] = null;
+
+            var isCheckedMyself = IsCheckedMyself(actualChessBoard);
+
+            if (!isCheckedMyself)
+            {
+                finalPossiblePositions.Add(item);
+            }
+        }
+
+        return finalPossiblePositions;
+
+        //List<PictureBox> pictureBoxes = new List<PictureBox>();
+
+        //int X = ActualPosition.X;
+        //int Y = ActualPosition.Y;
+
+        //Position[] possiblePositions = new Position[]
+        //{
+        //    new Position() { X = X - 2, Y = Y - 1 },
+        //    new Position() { X = X - 2, Y = Y + 1 },
+        //    new Position() { X = X - 1, Y = Y + 2 },
+        //    new Position() { X = X + 1, Y = Y + 2 },
+        //    new Position() { X = X + 2, Y = Y + 1 },
+        //    new Position() { X = X + 2, Y = Y - 1 },
+        //    new Position() { X = X - 1, Y = Y - 2 },
+        //    new Position() { X = X + 1, Y = Y - 2 },
+        //};
+
+        //foreach (var item in possiblePositions)
+        //{
+        //    bool isNewPlaceWithinChessBoard = (item.X >= 0 && item.X <= 7) && (item.Y >= 0 && item.Y <= 7);
+
+        //    if (isNewPlaceWithinChessBoard)
+        //    {
+        //        if (pieces[item.X, item.Y] is null)
+        //        {
+        //            CreateNewPositionHelper(item.X, item.Y, pictureBoxes);
+        //        }
+        //        else
+        //        {
+        //            if (pieces[item.X, item.Y].Color != Color)
+        //            {
+        //                if (!(pieces[item.X, item.Y] is King))
+        //                {
+        //                    CreateNewPositionHelper(item.X, item.Y, pictureBoxes);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        //return pictureBoxes;       
     }
 
     public override Piece DeepCopy(Piece piece, bool color)

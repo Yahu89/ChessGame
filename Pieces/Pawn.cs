@@ -22,7 +22,7 @@ public class Pawn : Piece
         }
     }
 
-    public override List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces)
+    private List<PictureBox> PossiblePositionsWithoutCheckVerify()
     {
         List<PictureBox> pictureBoxes = new List<PictureBox>();
 
@@ -33,7 +33,7 @@ public class Pawn : Piece
         {
             if (X - 1 >= 0)
             {
-                if (pieces[X - 1, Y] is null)
+                if (ChessBoard.Pieces[X - 1, Y] is null)
                 {
                     CreateNewPositionHelper(X - 1, Y, pictureBoxes);
                     AdditionalPositionBeforeFirstMove(pictureBoxes, X - 2);
@@ -42,11 +42,11 @@ public class Pawn : Piece
 
             if (X - 1 >= 0 && Y - 1 >= 0)
             {
-                if (pieces[X - 1, Y - 1] is King && pieces[X - 1, Y - 1].Color == true)
+                if (ChessBoard.Pieces[X - 1, Y - 1] is King && ChessBoard.Pieces[X - 1, Y - 1].Color == true)
                 {
 
                 }
-                else if (pieces[X - 1, Y - 1] != null && pieces[X - 1, Y - 1].Color == true)
+                else if (ChessBoard.Pieces[X - 1, Y - 1] != null && ChessBoard.Pieces[X - 1, Y - 1].Color == true)
                 {
                     CreateNewPositionHelper(X - 1, Y - 1, pictureBoxes);
                 }
@@ -55,11 +55,11 @@ public class Pawn : Piece
 
             if (X - 1 >= 0 && Y + 1 <= 7)
             {
-                if (pieces[X - 1, Y + 1] is King && pieces[X - 1, Y + 1].Color == true)
+                if (ChessBoard.Pieces[X - 1, Y + 1] is King && ChessBoard.Pieces[X - 1, Y + 1].Color == true)
                 {
 
                 }
-                else if (pieces[X - 1, Y + 1] != null && pieces[X - 1, Y + 1].Color == true)
+                else if (ChessBoard.Pieces[X - 1, Y + 1] != null && ChessBoard.Pieces[X - 1, Y + 1].Color == true)
                 {
                     CreateNewPositionHelper(X - 1, Y + 1, pictureBoxes);
                 }
@@ -70,7 +70,7 @@ public class Pawn : Piece
         {
             if (X + 1 <= 7)
             {
-                if (pieces[X + 1, Y] is null)
+                if (ChessBoard.Pieces[X + 1, Y] is null)
                 {
                     CreateNewPositionHelper(X + 1, Y, pictureBoxes);
                     AdditionalPositionBeforeFirstMove(pictureBoxes, X + 2);
@@ -79,23 +79,23 @@ public class Pawn : Piece
 
             if (X + 1 <= 7 && Y - 1 >= 0)
             {
-                if (pieces[X + 1, Y - 1] is King && pieces[X + 1, Y - 1].Color == false)
+                if (ChessBoard.Pieces[X + 1, Y - 1] is King && ChessBoard.Pieces[X + 1, Y - 1].Color == false)
                 {
 
                 }
-                else if (pieces[X + 1, Y - 1] != null && pieces[X + 1, Y - 1].Color == false)
+                else if (ChessBoard.Pieces[X + 1, Y - 1] != null && ChessBoard.Pieces[X + 1, Y - 1].Color == false)
                 {
                     CreateNewPositionHelper(X + 1, Y - 1, pictureBoxes);
                 }
             }
-            
+
             if (X + 1 <= 7 && Y + 1 <= 7)
             {
-                if (pieces[X + 1, Y + 1] is King && pieces[X + 1, Y + 1].Color == false)
+                if (ChessBoard.Pieces[X + 1, Y + 1] is King && ChessBoard.Pieces[X + 1, Y + 1].Color == false)
                 {
 
                 }
-                else if (pieces[X + 1, Y + 1] != null && pieces[X + 1, Y + 1].Color == false)
+                else if (ChessBoard.Pieces[X + 1, Y + 1] != null && ChessBoard.Pieces[X + 1, Y + 1].Color == false)
                 {
                     CreateNewPositionHelper(X + 1, Y + 1, pictureBoxes);
                 }
@@ -104,6 +104,113 @@ public class Pawn : Piece
         }
 
         return pictureBoxes;
+    }
+
+    public override List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces)
+    {
+        var positionsWithoutCheckVerify = PossiblePositionsWithoutCheckVerify();
+        var finalPossiblePositions = new List<PictureBox>();
+
+        foreach (var item in positionsWithoutCheckVerify)
+        {
+            var actualChessBoard = ChessBoard.CreateTemporatyChessBoard(ChessBoard.Pieces);
+            var actualKingPosition = KingPosition(actualChessBoard, ChessBoard.SelectedPiece.Color);
+            int x = ChessBoard.CalculatePositionFromPoint(new Point(item.Location.X, item.Location.Y)).X;
+            int y = ChessBoard.CalculatePositionFromPoint(new Point(item.Location.X, item.Location.Y)).Y;
+
+            actualChessBoard[x, y] = ChessBoard.SelectedPiece;
+            actualChessBoard[ActualPosition.X, ActualPosition.Y] = null;
+
+            var isCheckedMyself = IsCheckedMyself(actualChessBoard);
+
+            if (!isCheckedMyself)
+            {
+                finalPossiblePositions.Add(item);
+            }
+        }
+
+        return finalPossiblePositions;
+
+        //List<PictureBox> pictureBoxes = new List<PictureBox>();
+
+        //int X = ActualPosition.X;
+        //int Y = ActualPosition.Y;
+
+        //if (Color == false)
+        //{
+        //    if (X - 1 >= 0)
+        //    {
+        //        if (pieces[X - 1, Y] is null)
+        //        {
+        //            CreateNewPositionHelper(X - 1, Y, pictureBoxes);
+        //            AdditionalPositionBeforeFirstMove(pictureBoxes, X - 2);
+        //        }
+        //    }
+
+        //    if (X - 1 >= 0 && Y - 1 >= 0)
+        //    {
+        //        if (pieces[X - 1, Y - 1] is King && pieces[X - 1, Y - 1].Color == true)
+        //        {
+
+        //        }
+        //        else if (pieces[X - 1, Y - 1] != null && pieces[X - 1, Y - 1].Color == true)
+        //        {
+        //            CreateNewPositionHelper(X - 1, Y - 1, pictureBoxes);
+        //        }
+        //    }
+
+
+        //    if (X - 1 >= 0 && Y + 1 <= 7)
+        //    {
+        //        if (pieces[X - 1, Y + 1] is King && pieces[X - 1, Y + 1].Color == true)
+        //        {
+
+        //        }
+        //        else if (pieces[X - 1, Y + 1] != null && pieces[X - 1, Y + 1].Color == true)
+        //        {
+        //            CreateNewPositionHelper(X - 1, Y + 1, pictureBoxes);
+        //        }
+        //    }
+
+        //}
+        //else
+        //{
+        //    if (X + 1 <= 7)
+        //    {
+        //        if (pieces[X + 1, Y] is null)
+        //        {
+        //            CreateNewPositionHelper(X + 1, Y, pictureBoxes);
+        //            AdditionalPositionBeforeFirstMove(pictureBoxes, X + 2);
+        //        }
+        //    }
+
+        //    if (X + 1 <= 7 && Y - 1 >= 0)
+        //    {
+        //        if (pieces[X + 1, Y - 1] is King && pieces[X + 1, Y - 1].Color == false)
+        //        {
+
+        //        }
+        //        else if (pieces[X + 1, Y - 1] != null && pieces[X + 1, Y - 1].Color == false)
+        //        {
+        //            CreateNewPositionHelper(X + 1, Y - 1, pictureBoxes);
+        //        }
+        //    }
+
+        //    if (X + 1 <= 7 && Y + 1 <= 7)
+        //    {
+        //        if (pieces[X + 1, Y + 1] is King && pieces[X + 1, Y + 1].Color == false)
+        //        {
+
+        //        }
+        //        else if (pieces[X + 1, Y + 1] != null && pieces[X + 1, Y + 1].Color == false)
+        //        {
+        //            CreateNewPositionHelper(X + 1, Y + 1, pictureBoxes);
+        //        }
+        //    }
+
+        //}
+
+        //return pictureBoxes;
     }
 
     private void AdditionalPositionBeforeFirstMove(List<PictureBox> pictureBoxes, int x)

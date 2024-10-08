@@ -21,7 +21,7 @@ public class Bishop : Piece
         }
     }
 
-    public override List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces)
+    private List<PictureBox> PossiblePositionsWithoutCheckVerify()
     {
         List<PictureBox> pictureBoxes = new List<PictureBox>();
 
@@ -31,23 +31,23 @@ public class Bishop : Piece
         int Y = ActualPosition.Y + 1;
 
         for (; Y <= 7 && X >= 0; Y++)
-        {            
-            if (pieces[X, Y] is null)
+        {
+            if (ChessBoard.Pieces[X, Y] is null)
             {
                 CreateNewPositionHelper(X, Y, pictureBoxes);
                 X--;
             }
             else
             {
-                if (pieces[X, Y].Color == Color)
+                if (ChessBoard.Pieces[X, Y].Color == Color)
                 {
-                    break;             
+                    break;
                 }
                 else
                 {
-                    if (pieces[X, Y] is King)
+                    if (ChessBoard.Pieces[X, Y] is King)
                     {
-                        break;                    
+                        break;
                     }
                     else
                     {
@@ -65,20 +65,20 @@ public class Bishop : Piece
 
         for (; Y <= 7 && X <= 7; Y++)
         {
-            if (pieces[X, Y] is null)
+            if (ChessBoard.Pieces[X, Y] is null)
             {
                 CreateNewPositionHelper(X, Y, pictureBoxes);
                 X++;
             }
             else
             {
-                if (pieces[X, Y].Color == Color)
+                if (ChessBoard.Pieces[X, Y].Color == Color)
                 {
                     break;
                 }
                 else
                 {
-                    if (pieces[X, Y] is King)
+                    if (ChessBoard.Pieces[X, Y] is King)
                     {
                         break;
                     }
@@ -98,20 +98,20 @@ public class Bishop : Piece
 
         for (; Y >= 0 && X <= 7; Y--)
         {
-            if (pieces[X, Y] is null)
+            if (ChessBoard.Pieces[X, Y] is null)
             {
                 CreateNewPositionHelper(X, Y, pictureBoxes);
                 X++;
             }
             else
             {
-                if (pieces[X, Y].Color == Color)
+                if (ChessBoard.Pieces[X, Y].Color == Color)
                 {
                     break;
                 }
                 else
                 {
-                    if (pieces[X, Y] is King)
+                    if (ChessBoard.Pieces[X, Y] is King)
                     {
                         break;
                     }
@@ -131,20 +131,20 @@ public class Bishop : Piece
 
         for (; Y >= 0 && X >= 0; Y--)
         {
-            if (pieces[X, Y] is null)
+            if (ChessBoard.Pieces[X, Y] is null)
             {
                 CreateNewPositionHelper(X, Y, pictureBoxes);
                 X--;
             }
             else
             {
-                if (pieces[X, Y].Color == Color)
+                if (ChessBoard.Pieces[X, Y].Color == Color)
                 {
                     break;
                 }
                 else
                 {
-                    if (pieces[X, Y] is King)
+                    if (ChessBoard.Pieces[X, Y] is King)
                     {
                         break;
                     }
@@ -158,6 +158,32 @@ public class Bishop : Piece
         }
 
         return pictureBoxes;
+    }
+
+    public override List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces)
+    {
+        var positionsWithoutCheckVerify = PossiblePositionsWithoutCheckVerify();
+        var finalPossiblePositions = new List<PictureBox>();
+
+        foreach (var item in positionsWithoutCheckVerify)
+        {
+            var actualChessBoard = ChessBoard.CreateTemporatyChessBoard(ChessBoard.Pieces);
+            var actualKingPosition = KingPosition(actualChessBoard, ChessBoard.SelectedPiece.Color);
+            int x = ChessBoard.CalculatePositionFromPoint(new Point(item.Location.X, item.Location.Y)).X;
+            int y = ChessBoard.CalculatePositionFromPoint(new Point(item.Location.X, item.Location.Y)).Y;
+
+            actualChessBoard[x, y] = ChessBoard.SelectedPiece;
+            actualChessBoard[ActualPosition.X, ActualPosition.Y] = null;
+
+            var isCheckedMyself = IsCheckedMyself(actualChessBoard);
+
+            if (!isCheckedMyself)
+            {
+                finalPossiblePositions.Add(item);
+            }
+        }
+
+        return finalPossiblePositions;
     }
 
     public override Piece DeepCopy(Piece piece, bool color)

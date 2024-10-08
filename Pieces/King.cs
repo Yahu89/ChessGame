@@ -34,7 +34,7 @@ public class King : Piece
         int x = ActualPosition.X;
         int y = ActualPosition.Y;
 
-        Position[] possiblePositions = new Position[]
+        List<Position> possiblePositions = new List<Position>()
         {
             new Position(x - 1, y),
             new Position(x - 1, y + 1),
@@ -46,7 +46,9 @@ public class King : Piece
             new Position(x - 1, y - 1)
         };
 
-        foreach (var item in possiblePositions)
+        var newPossibleKingPositions = AreTwoKingsNextTo(pieces, possiblePositions);
+
+        foreach (var item in newPossibleKingPositions)
         {
             if (item.X >= 0 && item.X <= 7 && item.Y >= 0 && item.Y <= 7)
             {
@@ -67,6 +69,32 @@ public class King : Piece
         }
 
         return pictureBoxes;
+    }
+
+    private List<Position> AreTwoKingsNextTo(Piece[,] newChessBoard, List<Position> possibleKingPositions)
+    {
+        var actualEnemyKingPosition = KingPosition(newChessBoard, !ChessBoard.SelectedPiece.Color);
+
+        int x = actualEnemyKingPosition.X;
+        int y = actualEnemyKingPosition.Y;
+
+        List<Position> newPossibleList = new List<Position>();
+
+        foreach (var item in possibleKingPositions)
+        {
+            if (item.X >= 0 && item.X <= 7 && item.Y >= 0 && item.Y <= 7)
+            {
+                int resX = x - item.X;
+                int resY = y - item.Y;
+
+                if (!((Math.Abs(resX) == 0 || Math.Abs(resX) == 1) && (Math.Abs(resY) == 0 || Math.Abs(resY) == 1)))
+                {
+                    newPossibleList.Add(item);
+                }
+            }       
+        }
+
+        return newPossibleList;
     }
 
     public override Piece DeepCopy(Piece piece, bool color)
