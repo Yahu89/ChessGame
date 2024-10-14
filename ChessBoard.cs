@@ -10,8 +10,8 @@ namespace ChessGame_v1;
 public class ChessBoard
 {
     public static Piece[,] Pieces { get; set; } = new Piece[8, 8];
-    public static Piece[,] TemporaryPieces { get; set; }
-    public static Dictionary<Position, Point> AllPositionsInTotalList { get; set; } = new Dictionary<Position, Point>();
+    public static Piece[,] TemporaryChessBoard { get; set; }
+    public static readonly Dictionary<Position, Point> AllPositionsInTotalList = new Dictionary<Position, Point>();
     public static Image PossiblePositionImage { get; set; } = Image.FromFile("C:\\Users\\Yahu\\source\\repos\\ChessGame_v1\\ChessGame_v1\\Images\\fieldAllowed.png");
     public static Piece SelectedPiece { get; set; } = null;
     public List<PictureBox> PossiblePositionsForNextMove { get; set; }
@@ -25,8 +25,7 @@ public class ChessBoard
 
     public static Piece[,] CreateTemporatyChessBoard(Piece[,] pieces)
     {
-        TemporaryPieces = null;
-        TemporaryPieces = new Piece[8, 8];
+        var temporaryChessBoard = new Piece[8, 8];
 
         for (int i = 0; i < pieces.GetLength(0); i++)
         {
@@ -34,12 +33,12 @@ public class ChessBoard
             {
                 if (pieces[i, j] != null)
                 {
-                    TemporaryPieces[i, j] = pieces[i, j].DeepCopy(pieces[i, j], pieces[i, j].Color);
+                    temporaryChessBoard[i, j] = pieces[i, j].DeepCopy(pieces[i, j], pieces[i, j].Color);
                 }             
             }
         }
 
-        return TemporaryPieces;
+        return temporaryChessBoard;
     }
     private void FillAllPositionsInTotalList()
     {
@@ -56,21 +55,18 @@ public class ChessBoard
 
     public static Point CalculatePointFromPosition(Position position)
     {
-        foreach (var p in AllPositionsInTotalList.Keys)
-        {
-            if (p.X == position.X &&  p.Y == position.Y)
-            {
-                return AllPositionsInTotalList[p];
-            }
-        }
-
-        throw new NullReferenceException();
+        var result = AllPositionsInTotalList.FirstOrDefault(x => x.Key.X == position.X && x.Key.Y == position.Y);
+        var res2 = result.Value;
+        int x = res2.X;
+        int y = res2.Y;
+        var newPoint = new Point(x, y);
+        return newPoint;
     }
-    public static bool IfAllPiecesUnselected(Piece[,] pieces)
+    public static bool IfAllPiecesUnselected()
     {
         bool ifAny = true;
 
-        foreach (var item in pieces)
+        foreach (var item in Pieces)
         {
             if (item != null && item.IsActive)
             {
@@ -99,7 +95,7 @@ public class ChessBoard
     {
         var piece = (Piece)sender;
 
-        if (IfAllPiecesUnselected(Pieces))
+        if (IfAllPiecesUnselected())
         {       
             if (piece.Color == Game.ColorHasMove)
             {

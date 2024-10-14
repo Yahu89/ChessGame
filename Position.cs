@@ -19,4 +19,10 @@ public class Position
         X = x;
         Y = y;
     }
+
+    public Position(Position position)
+    {
+        X = position.X;
+        Y = position.Y;
+    }
 }

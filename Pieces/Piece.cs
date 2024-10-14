@@ -49,10 +49,6 @@ public abstract class Piece : PictureBox
 
     protected void CreateNewPositionHelper(int x, int y, List<PictureBox> pictureBoxes)
     {
-        var possibleNewChessBoard = ChessBoard.CreateTemporatyChessBoard(ChessBoard.Pieces);
-        possibleNewChessBoard[x, y] = ChessBoard.Pieces[ActualPosition.X, ActualPosition.Y];
-        possibleNewChessBoard[ActualPosition.X, ActualPosition.Y] = null;
-
         pictureBoxes.Add(new PictureBox()
         {
             BackgroundImage = ChessBoard.PossiblePositionImage,
@@ -77,6 +73,34 @@ public abstract class Piece : PictureBox
         }
 
         return kingPosition;
+    }
+
+    private bool IsCheckedMyselfForKnight(Position kingPosition, Piece[,] chessBoard)
+    {
+        List<Position> possibleKnightPositions = new List<Position>()
+        {
+            new Position(kingPosition.X - 2, kingPosition.Y - 1),
+            new Position(kingPosition.X - 2, kingPosition.Y + 1),
+            new Position(kingPosition.X - 1, kingPosition.Y + 2),
+            new Position(kingPosition.X + 1, kingPosition.Y + 2),
+            new Position(kingPosition.X + 2, kingPosition.Y - 1),
+            new Position(kingPosition.X + 2, kingPosition.Y + 1),
+            new Position(kingPosition.X - 1, kingPosition.Y - 2),
+            new Position(kingPosition.X + 1, kingPosition.Y - 2)
+        };
+
+        foreach (var item in possibleKnightPositions)
+        {
+            if (item.X >= 0 && item.X <= 7 && item.Y >= 0 && item.Y <= 7)
+            {
+                if (chessBoard[item.X, item.Y] is Knight && chessBoard[item.X, item.Y].Color != ChessBoard.SelectedPiece.Color)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     protected bool IsCheckedMyself(Piece[,] newChessBoard)
@@ -114,7 +138,8 @@ public abstract class Piece : PictureBox
                 {
                     break;
                 }
-                else if (newChessBoard[i, kingPosition.Y] is Rook || newChessBoard[i, kingPosition.Y] is Queen)
+
+                if (newChessBoard[i, kingPosition.Y] is Rook || newChessBoard[i, kingPosition.Y] is Queen)
                 {
                     return true;
                 }
@@ -277,9 +302,10 @@ public abstract class Piece : PictureBox
             X--;
         }
 
-        //var isCheckedByKing = IsCheckedMyselfForHorizontalVerticalByKingHelper(newChessBoard);
+        var isCheckedMyselfForKnight = IsCheckedMyselfForKnight(kingPosition, newChessBoard);
 
-        return false; // || isCheckedByKing;
+
+        return false || isCheckedMyselfForKnight;
     }
 
 

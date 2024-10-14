@@ -312,6 +312,12 @@ public class Queen : Piece
 
     public override Piece DeepCopy(Piece piece, bool color)
     {
-        return new Queen(color);
+        Piece newQueen = new Queen(color)
+        {
+            Color = piece.Color,
+            ActualPosition = piece.ActualPosition
+        };
+
+        return newQueen;
     }
 }

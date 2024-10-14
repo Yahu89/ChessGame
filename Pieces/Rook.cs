@@ -175,10 +175,19 @@ public class Rook : Piece
 
     public override Piece DeepCopy(Piece piece, bool color)
     {
+        Position newPosition = new Position();
+        Point newPoint = new Point();
+
+        newPosition.X = piece.ActualPosition.X;
+        newPosition.Y = piece.ActualPosition.Y;
+        newPoint.X = piece.Location.X;
+        newPoint.Y = piece.Location.Y;
+
         Piece newRook = new Rook(color)
         {
             Color = piece.Color,
-            ActualPosition = piece.ActualPosition 
+            ActualPosition = newPosition,
+            Location = newPoint
         };
 
         return newRook;

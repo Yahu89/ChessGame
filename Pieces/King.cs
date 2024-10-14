@@ -27,12 +27,12 @@ public class King : Piece
         }
     }
 
-    public override List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces)
+    private List<PictureBox> PossiblePositionsWithoutCheckVerify()
     {
         List<PictureBox> pictureBoxes = new List<PictureBox>();
 
-        int x = ActualPosition.X;
-        int y = ActualPosition.Y;
+        int x = KingPosition(ChessBoard.Pieces, ChessBoard.SelectedPiece.Color).X;
+        int y = KingPosition(ChessBoard.Pieces, ChessBoard.SelectedPiece.Color).Y;
 
         List<Position> possiblePositions = new List<Position>()
         {
@@ -46,29 +46,61 @@ public class King : Piece
             new Position(x - 1, y - 1)
         };
 
-        var newPossibleKingPositions = AreTwoKingsNextTo(pieces, possiblePositions);
+        List<Position> finalPossiblePositions = new List<Position>();
 
-        foreach (var item in newPossibleKingPositions)
+        foreach (var item in possiblePositions)
         {
             if (item.X >= 0 && item.X <= 7 && item.Y >= 0 && item.Y <= 7)
             {
-                if (pieces[item.X, item.Y] == null)
+                if (ChessBoard.Pieces[item.X, item.Y] == null)
+                {
+                    CreateNewPositionHelper(item.X, item.Y, pictureBoxes);
+                    continue;
+                }
+
+                if (ChessBoard.Pieces[item.X, item.Y].Color == ChessBoard.SelectedPiece.Color)
+                {
+                    continue;
+                }
+
+                if (!(ChessBoard.Pieces[item.X, item.Y] is King))
                 {
                     CreateNewPositionHelper(item.X, item.Y, pictureBoxes);
                 }
-                else if (pieces[item.X, item.Y] is King && pieces[item.X, item.Y].Color != Color)
-                {
-
-                }
-                else if (pieces[item.X, item.Y] != null && pieces[item.X, item.Y].Color != Color)
-                {
-                    CreateNewPositionHelper(item.X, item.Y, pictureBoxes);
-                }
-
             }
         }
 
         return pictureBoxes;
+    }
+
+    public override List<PictureBox> PossiblePositionsForNextMove(Piece[,] pieces)
+    {
+        var positionsWithoutCheckVerify = PossiblePositionsWithoutCheckVerify();
+        var finalPossiblePositions = new List<PictureBox>();
+
+        foreach (var item in positionsWithoutCheckVerify)
+        {
+            var actualChessBoard = ChessBoard.CreateTemporatyChessBoard(ChessBoard.Pieces);
+            int x = ChessBoard.CalculatePositionFromPoint(new Point(item.Location.X, item.Location.Y)).X;
+            int y = ChessBoard.CalculatePositionFromPoint(new Point(item.Location.X, item.Location.Y)).Y;
+
+            var kingCopy = DeepCopy(ChessBoard.SelectedPiece, ChessBoard.SelectedPiece.Color);
+            actualChessBoard[ActualPosition.X, ActualPosition.Y] = null;
+            actualChessBoard[x, y] = kingCopy;
+
+            actualChessBoard[x, y].ActualPosition.X = x;
+            actualChessBoard[x, y].ActualPosition.Y = y;
+
+
+            var isCheckedMyself = IsCheckedMyself(actualChessBoard);
+
+            if (!isCheckedMyself)
+            {
+                finalPossiblePositions.Add(item);
+            }
+        }
+
+        return finalPossiblePositions;
     }
 
     private List<Position> AreTwoKingsNextTo(Piece[,] newChessBoard, List<Position> possibleKingPositions)
@@ -99,10 +131,16 @@ public class King : Piece
 
     public override Piece DeepCopy(Piece piece, bool color)
     {
+        Point newPoint = new Point();
+
+        newPoint.X = piece.Location.X;
+        newPoint.Y = piece.Location.Y;
+
         Piece newKing = new King(color)
         {
             Color = piece.Color,
-            ActualPosition = piece.ActualPosition
+            ActualPosition = new Position(piece.ActualPosition),
+            Location = newPoint
         };
 
         return newKing;

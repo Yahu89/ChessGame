@@ -188,10 +188,19 @@ public class Bishop : Piece
 
     public override Piece DeepCopy(Piece piece, bool color)
     {
+        Position newPosition = new Position();
+        Point newPoint = new Point();
+
+        newPosition.X = piece.ActualPosition.X;
+        newPosition.Y = piece.ActualPosition.Y;
+        newPoint.X = piece.Location.X;
+        newPoint.Y = piece.Location.Y;
+
         Piece newBishop = new Bishop(color)
         {
             Color = piece.Color,
-            ActualPosition = piece.ActualPosition
+            ActualPosition = newPosition,
+            Location = newPoint
         };
 
         return newBishop;
