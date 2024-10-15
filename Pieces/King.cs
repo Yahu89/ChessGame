@@ -9,8 +9,10 @@ namespace ChessGame_v1.Pieces;
 
 public class King : Piece
 {
-    public override Image PieceNotSelectedImagePath { get; set; } 
+    public override Image PieceNotSelectedImagePath { get; set; }
     public override Image PieceSelectedImagePath { get; set; }
+    public bool IsChecked { get; set; } = false;
+    //public Image CheckedImage { get; set; }
     public King(bool color) : base()
     {
         Color = color;
@@ -46,7 +48,7 @@ public class King : Piece
             new Position(x - 1, y - 1)
         };
 
-        List<Position> finalPossiblePositions = new List<Position>();
+        //List<Position> finalPossiblePositions = new List<Position>();
 
         foreach (var item in possiblePositions)
         {
@@ -103,32 +105,6 @@ public class King : Piece
         return finalPossiblePositions;
     }
 
-    private List<Position> AreTwoKingsNextTo(Piece[,] newChessBoard, List<Position> possibleKingPositions)
-    {
-        var actualEnemyKingPosition = KingPosition(newChessBoard, !ChessBoard.SelectedPiece.Color);
-
-        int x = actualEnemyKingPosition.X;
-        int y = actualEnemyKingPosition.Y;
-
-        List<Position> newPossibleList = new List<Position>();
-
-        foreach (var item in possibleKingPositions)
-        {
-            if (item.X >= 0 && item.X <= 7 && item.Y >= 0 && item.Y <= 7)
-            {
-                int resX = x - item.X;
-                int resY = y - item.Y;
-
-                if (!((Math.Abs(resX) == 0 || Math.Abs(resX) == 1) && (Math.Abs(resY) == 0 || Math.Abs(resY) == 1)))
-                {
-                    newPossibleList.Add(item);
-                }
-            }       
-        }
-
-        return newPossibleList;
-    }
-
     public override Piece DeepCopy(Piece piece, bool color)
     {
         Point newPoint = new Point();
@@ -145,4 +121,35 @@ public class King : Piece
 
         return newKing;
     }
+
+    public void Checked(bool color)
+    {
+        IsChecked = true;
+
+        if (color)
+        {
+            BackgroundImage = Image.FromFile("C:\\Users\\Yahu\\source\\repos\\ChessGame_v1\\ChessGame_v1\\Images\\king_checked.png");
+        }
+        else
+        {
+            BackgroundImage = Image.FromFile("C:\\Users\\Yahu\\source\\repos\\ChessGame_v1\\ChessGame_v1\\Images\\king_white_checked.png");
+        }
+
+    }
+
+    public void Unchecked(bool color)
+    {
+        IsChecked = false;
+
+        if (color)
+        {
+            BackgroundImage = Image.FromFile("C:\\Users\\Yahu\\source\\repos\\ChessGame_v1\\ChessGame_v1\\Images\\king.png");
+        }
+        else
+        {
+            BackgroundImage = Image.FromFile("C:\\Users\\Yahu\\source\\repos\\ChessGame_v1\\ChessGame_v1\\Images\\king_white.png");
+        }
+    }
+
+
 }

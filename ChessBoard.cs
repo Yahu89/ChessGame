@@ -34,7 +34,7 @@ public class ChessBoard
                 if (pieces[i, j] != null)
                 {
                     temporaryChessBoard[i, j] = pieces[i, j].DeepCopy(pieces[i, j], pieces[i, j].Color);
-                }             
+                }
             }
         }
 
@@ -96,7 +96,7 @@ public class ChessBoard
         var piece = (Piece)sender;
 
         if (IfAllPiecesUnselected())
-        {       
+        {
             if (piece.Color == Game.ColorHasMove)
             {
                 piece.IsActive = true;
@@ -107,7 +107,7 @@ public class ChessBoard
                 PossiblePositionsForNextMove.ForEach(_form.panel1.Controls.Add);
                 PossiblePositionsForNextMove.ForEach(x => x.BringToFront());
                 RemoveEventServiceAfterPieceSelected();
-            }           
+            }
         }
         else
         {
@@ -115,7 +115,7 @@ public class ChessBoard
             piece.IsActive = false;
             piece.BackgroundImage = piece.PieceNotSelectedImagePath;
             SelectedPiece = null;
-            RemovePossiblePositions();          
+            RemovePossiblePositions();
         }
     }
 
@@ -143,13 +143,27 @@ public class ChessBoard
             tempSelected.IsBeforeFirstMove = false;
         }
 
+        if (IsChecked())
+        {
+            var kingPosition = KingPosition();
+            var king = Pieces[kingPosition.X, kingPosition.Y] as King;
+            king.Checked(!SelectedPiece.Color);
+        }
+        else
+        {
+            var kingPosition = KingPosition();
+            var king = Pieces[kingPosition.X, kingPosition.Y] as King;
+            king.Unchecked(!SelectedPiece.Color);
+        }
+        
+
         SelectedPiece = null;
         Game.SwitchPlayerForMove();
     }
 
     public void SetPiecesInStartPosition()
     {
-        for (int i = 0; i <= 7;  i++)
+        for (int i = 0; i <= 7; i++)
         {
             Pieces[1, i] = new Pawn(true)
             {
@@ -259,7 +273,7 @@ public class ChessBoard
             ActualPosition = new Position(7, 7),
         };
 
-        for (int i = 0; i <= 7;  i++)
+        for (int i = 0; i <= 7; i++)
         {
             Pieces[0, i].BackgroundImage = Pieces[0, i].PieceNotSelectedImagePath;
             Pieces[0, i].Location = CalculatePointFromPosition(Pieces[0, i].ActualPosition);
@@ -300,5 +314,224 @@ public class ChessBoard
                 piece.MouseClick += SwitchSelectedPiece;
             }
         }
+    }
+
+    public Position KingPosition()
+    {
+        Position kingPosition = new Position();
+
+        foreach (var item in Pieces)
+        {
+            if (item != null && item.Color == !SelectedPiece.Color && item is King)
+            {
+                kingPosition = new Position(item.ActualPosition);
+                return kingPosition;
+            }
+        }
+
+        return null;
+    }
+
+    public bool IsChecked()
+    {
+        Position kingPosition = KingPosition();
+
+        // check positions upstream through the chessboard
+
+        for (int i = kingPosition.X - 1; i >= 0; i--)
+        {
+            if (Pieces[i, kingPosition.Y] != null)
+            {
+                if (Pieces[i, kingPosition.Y].Color == !SelectedPiece.Color)
+                {
+                    break;
+                }
+
+                if (Pieces[i, kingPosition.Y] is Rook || Pieces[i, kingPosition.Y] is Queen)
+                {
+                    return true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        // check positions downstream through the chessboard
+
+        for (int i = kingPosition.X + 1; i <= 7; i++)
+        {
+            if (Pieces[i, kingPosition.Y] != null)
+            {
+                if (Pieces[i, kingPosition.Y].Color == !SelectedPiece.Color)
+                {
+                    break;
+                }
+
+                if (Pieces[i, kingPosition.Y] is Rook || Pieces[i, kingPosition.Y] is Queen)
+                {
+                    return true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        // check positions turning right through the chessboard
+
+        for (int i = kingPosition.Y + 1; i <= 7; i++)
+        {
+            if (Pieces[kingPosition.X, i] != null)
+            {
+                if (Pieces[kingPosition.X, i].Color == !SelectedPiece.Color)
+                {
+                    break;
+                }
+
+                if (Pieces[kingPosition.X, i] is Rook || Pieces[kingPosition.X, i] is Queen)
+                {
+                    return true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        // check positions turning left through the chessboard
+
+        for (int i = kingPosition.Y - 1; i >= 0; i--)
+        {
+            if (Pieces[kingPosition.X, i] != null)
+            {
+                if (Pieces[kingPosition.X, i].Color == !SelectedPiece.Color)
+                {
+                    break;
+                }
+
+                if (Pieces[kingPosition.X, i] is Rook || Pieces[kingPosition.X, i] is Queen)
+                {
+                    return true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        // check positions upstream right through the chessboard
+
+        int X = kingPosition.X - 1;
+        int Y = kingPosition.Y + 1;
+
+        for (; Y <= 7 && X >= 0; Y++)
+        {
+            if (Pieces[X, Y] != null)
+            {
+                if (Pieces[X, Y].Color == !SelectedPiece.Color)
+                {
+                    break;
+                }
+
+                if (Pieces[X, Y] is Bishop || Pieces[X, Y] is Queen)
+                {
+                    return true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            X--;
+        }
+
+        // check positions downstream right through the chessboard
+
+        X = kingPosition.X + 1;
+        Y = kingPosition.Y + 1;
+
+        for (; Y <= 7 && X <= 7; Y++)
+        {
+            if (Pieces[X, Y] != null)
+            {
+                if (Pieces[X, Y].Color == !SelectedPiece.Color)
+                {
+                    break;
+                }
+
+                if (Pieces[X, Y] is Bishop || Pieces[X, Y] is Queen)
+                {
+                    return true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            X++;
+        }
+
+        // check positions downstream left through the chessboard
+
+        X = kingPosition.X + 1;
+        Y = kingPosition.Y - 1;
+
+        for (; Y >= 0 && X <= 7; Y--)
+        {
+            if (Pieces[X, Y] != null)
+            {
+                if (Pieces[X, Y].Color == !SelectedPiece.Color)
+                {
+                    break;
+                }
+
+                if (Pieces[X, Y] is Bishop || Pieces[X, Y] is Queen)
+                {
+                    return true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            X++;
+        }
+
+        // check positions upstream left through the chessboard
+
+        X = kingPosition.X - 1;
+        Y = kingPosition.Y - 1;
+
+        for (; Y >= 0 && X >= 0; Y--)
+        {
+            if (Pieces[X, Y] != null)
+            {
+                if (Pieces[X, Y].Color == !SelectedPiece.Color)
+                {
+                    break;
+                }
+
+                if (Pieces[X, Y] is Bishop || Pieces[X, Y] is Queen)
+                {
+                    return true;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            X--;
+        }
+
+        return false;
     }
 }

@@ -75,7 +75,7 @@ public abstract class Piece : PictureBox
         return kingPosition;
     }
 
-    private bool IsCheckedMyselfForKnight(Position kingPosition, Piece[,] chessBoard)
+    private bool IsCheckedMyselfByKnight(Position kingPosition, Piece[,] chessBoard)
     {
         List<Position> possibleKnightPositions = new List<Position>()
         {
@@ -101,6 +101,58 @@ public abstract class Piece : PictureBox
         }
 
         return false;
+    }
+
+    private bool IsCheckedMyselfByKing(Position kingPosition, Piece[,] chessBoard)
+    {
+        var enemyKingPosition = KingPosition(chessBoard, !ChessBoard.SelectedPiece.Color);
+
+        List<Position> possiblePositions = new List<Position>()
+        {
+            new Position(kingPosition.X - 1, kingPosition.Y),
+            new Position(kingPosition.X - 1, kingPosition.Y + 1),
+            new Position(kingPosition.X, kingPosition.Y + 1),
+            new Position(kingPosition.X + 1, kingPosition.Y + 1),
+            new Position(kingPosition.X + 1, kingPosition.Y),
+            new Position(kingPosition.X + 1, kingPosition.Y - 1),
+            new Position(kingPosition.X, kingPosition.Y - 1),
+            new Position(kingPosition.X - 1, kingPosition.Y - 1)
+        };
+
+        if(possiblePositions.Any(x => x.X == enemyKingPosition.X && x.Y == enemyKingPosition.Y))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool IsCheckedMyselfByPawn(Position kingPosition, Piece[,] chessBoard, bool color)
+    {
+        if (!color)
+        {
+            List<Position> possiblePositions = new List<Position>()
+            {
+                new Position(kingPosition.X - 1, kingPosition.Y - 1),
+                new Position(kingPosition.X - 1, kingPosition.Y + 1)
+            };
+
+            possiblePositions = possiblePositions.Where(x => x.X >= 0 && x.X <= 7 && x.Y >= 0 && x.Y <= 7).ToList();
+            var ifAny = possiblePositions.Any(x => chessBoard[x.X, x.Y] is Pawn && chessBoard[x.X, x.Y].Color == true);
+            return ifAny;
+        }
+        else
+        {
+            List<Position> possiblePositions = new List<Position>()
+            {
+                new Position(kingPosition.X + 1, kingPosition.Y - 1),
+                new Position(kingPosition.X + 1, kingPosition.Y + 1)
+            };
+
+            possiblePositions = possiblePositions.Where(x => x.X >= 0 && x.X <= 7 && x.Y >= 0 && x.Y <= 7).ToList();
+            var ifAny = possiblePositions.Any(x => chessBoard[x.X, x.Y] is Pawn && chessBoard[x.X, x.Y].Color == false);
+            return ifAny;
+        }
     }
 
     protected bool IsCheckedMyself(Piece[,] newChessBoard)
@@ -200,11 +252,6 @@ public abstract class Piece : PictureBox
 
         for (; Y <= 7 && X >= 0; Y++)
         {
-            //if (X >= kingPosition.X - 1)
-            //{
-
-            //}
-
             if (newChessBoard[X, Y] != null)
             {
                 if (newChessBoard[X, Y].Color == ChessBoard.SelectedPiece.Color)
@@ -302,10 +349,12 @@ public abstract class Piece : PictureBox
             X--;
         }
 
-        var isCheckedMyselfForKnight = IsCheckedMyselfForKnight(kingPosition, newChessBoard);
 
+        var isCheckedMyselfForKnight = IsCheckedMyselfByKnight(kingPosition, newChessBoard);
+        var isCheckedMyselfByKing = IsCheckedMyselfByKing(kingPosition, newChessBoard);
+        var isCheckedMyselfByPawn = IsCheckedMyselfByPawn(kingPosition, newChessBoard, ChessBoard.SelectedPiece.Color);
 
-        return false || isCheckedMyselfForKnight;
+        return isCheckedMyselfByKing || isCheckedMyselfForKnight || isCheckedMyselfByPawn;
     }
 
 
