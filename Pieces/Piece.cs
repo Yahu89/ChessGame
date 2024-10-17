@@ -75,7 +75,7 @@ public abstract class Piece : PictureBox
         return kingPosition;
     }
 
-    private bool IsCheckedMyselfByKnight(Position kingPosition, Piece[,] chessBoard)
+    public bool IsCheckedMyselfByKnight(Position kingPosition, Piece[,] chessBoard)
     {
         List<Position> possibleKnightPositions = new List<Position>()
         {

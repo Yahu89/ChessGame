@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -94,26 +95,50 @@ public class ChessBoard
     public void SwitchSelectedPiece(object sender, EventArgs e)
     {
         var piece = (Piece)sender;
+        var king = piece as King;
 
         if (IfAllPiecesUnselected())
         {
             if (piece.Color == Game.ColorHasMove)
             {
                 piece.IsActive = true;
-                piece.BackgroundImage = piece.PieceSelectedImagePath;
                 SelectedPiece = piece;
                 PossiblePositionsForNextMove = piece.PossiblePositionsForNextMove(Pieces);
                 PossiblePositionsForNextMove.ForEach(x => x.MouseClick += Move);
                 PossiblePositionsForNextMove.ForEach(_form.panel1.Controls.Add);
                 PossiblePositionsForNextMove.ForEach(x => x.BringToFront());
                 RemoveEventServiceAfterPieceSelected();
+
+                if (king != null)
+                {
+                    if (!king.IsChecked)
+                    {
+                        piece.BackgroundImage = piece.PieceSelectedImagePath;
+                    }
+                }
+                else
+                {
+                    piece.BackgroundImage = piece.PieceSelectedImagePath;
+                }
             }
         }
         else
         {
             AddEventServiceWhenAllUnselected();
             piece.IsActive = false;
-            piece.BackgroundImage = piece.PieceNotSelectedImagePath;
+
+            if (king != null)
+            {
+                if (!king.IsChecked)
+                {
+                    piece.BackgroundImage = piece.PieceNotSelectedImagePath;
+                }
+            }
+            else
+            {
+                piece.BackgroundImage = piece.PieceNotSelectedImagePath;
+            }
+
             SelectedPiece = null;
             RemovePossiblePositions();
         }
@@ -143,19 +168,24 @@ public class ChessBoard
             tempSelected.IsBeforeFirstMove = false;
         }
 
-        if (IsChecked())
+        Position kingPosition = new Position();
+
+        foreach (var item in Pieces)
         {
-            var kingPosition = KingPosition();
-            var king = Pieces[kingPosition.X, kingPosition.Y] as King;
-            king.Checked(!SelectedPiece.Color);
+            if (item != null && item.Color == SelectedPiece.Color && item is King)
+            {
+                kingPosition = new Position(item.ActualPosition);
+            }
         }
-        else
+
+        var king = Pieces[kingPosition.X, kingPosition.Y] as King;
+        var res = IsCheckedForEnemy();
+
+        if (king.IsChecked)
         {
-            var kingPosition = KingPosition();
-            var king = Pieces[kingPosition.X, kingPosition.Y] as King;
-            king.Unchecked(!SelectedPiece.Color);
+            king.BackgroundImage = king.PieceNotSelectedImagePath;
+            king.IsChecked = false;
         }
-        
 
         SelectedPiece = null;
         Game.SwitchPlayerForMove();
@@ -332,7 +362,7 @@ public class ChessBoard
         return null;
     }
 
-    public bool IsChecked()
+    public bool IsCheckedForEnemy()
     {
         Position kingPosition = KingPosition();
 
@@ -349,6 +379,8 @@ public class ChessBoard
 
                 if (Pieces[i, kingPosition.Y] is Rook || Pieces[i, kingPosition.Y] is Queen)
                 {
+                    var enemyKing = Pieces[kingPosition.X, kingPosition.Y] as King;
+                    enemyKing.Checked(!SelectedPiece.Color);
                     return true;
                 }
                 else
@@ -371,6 +403,8 @@ public class ChessBoard
 
                 if (Pieces[i, kingPosition.Y] is Rook || Pieces[i, kingPosition.Y] is Queen)
                 {
+                    var enemyKing = Pieces[kingPosition.X, kingPosition.Y] as King;
+                    enemyKing.Checked(!SelectedPiece.Color);
                     return true;
                 }
                 else
@@ -393,6 +427,8 @@ public class ChessBoard
 
                 if (Pieces[kingPosition.X, i] is Rook || Pieces[kingPosition.X, i] is Queen)
                 {
+                    var enemyKing = Pieces[kingPosition.X, kingPosition.Y] as King;
+                    enemyKing.Checked(!SelectedPiece.Color);
                     return true;
                 }
                 else
@@ -415,6 +451,8 @@ public class ChessBoard
 
                 if (Pieces[kingPosition.X, i] is Rook || Pieces[kingPosition.X, i] is Queen)
                 {
+                    var enemyKing = Pieces[kingPosition.X, kingPosition.Y] as King;
+                    enemyKing.Checked(!SelectedPiece.Color);
                     return true;
                 }
                 else
@@ -440,6 +478,8 @@ public class ChessBoard
 
                 if (Pieces[X, Y] is Bishop || Pieces[X, Y] is Queen)
                 {
+                    var enemyKing = Pieces[kingPosition.X, kingPosition.Y] as King;
+                    enemyKing.Checked(!SelectedPiece.Color);
                     return true;
                 }
                 else
@@ -467,6 +507,8 @@ public class ChessBoard
 
                 if (Pieces[X, Y] is Bishop || Pieces[X, Y] is Queen)
                 {
+                    var enemyKing = Pieces[kingPosition.X, kingPosition.Y] as King;
+                    enemyKing.Checked(!SelectedPiece.Color);
                     return true;
                 }
                 else
@@ -494,6 +536,8 @@ public class ChessBoard
 
                 if (Pieces[X, Y] is Bishop || Pieces[X, Y] is Queen)
                 {
+                    var enemyKing = Pieces[kingPosition.X, kingPosition.Y] as King;
+                    enemyKing.Checked(!SelectedPiece.Color);
                     return true;
                 }
                 else
@@ -521,6 +565,8 @@ public class ChessBoard
 
                 if (Pieces[X, Y] is Bishop || Pieces[X, Y] is Queen)
                 {
+                    var enemyKing = Pieces[kingPosition.X, kingPosition.Y] as King;
+                    enemyKing.Checked(!SelectedPiece.Color);
                     return true;
                 }
                 else
@@ -530,6 +576,33 @@ public class ChessBoard
             }
 
             X--;
+        }
+
+        //var isCheckedByKnight = SelectedPiece.IsCheckedMyselfByKnight(kingPosition, Pieces);
+
+        List<Position> possibleKnightPositions = new List<Position>()
+        {
+            new Position(kingPosition.X - 2, kingPosition.Y - 1),
+            new Position(kingPosition.X - 2, kingPosition.Y + 1),
+            new Position(kingPosition.X - 1, kingPosition.Y + 2),
+            new Position(kingPosition.X + 1, kingPosition.Y + 2),
+            new Position(kingPosition.X + 2, kingPosition.Y - 1),
+            new Position(kingPosition.X + 2, kingPosition.Y + 1),
+            new Position(kingPosition.X - 1, kingPosition.Y - 2),
+            new Position(kingPosition.X + 1, kingPosition.Y - 2)
+        };
+
+        foreach (var item in possibleKnightPositions)
+        {
+            if (item.X >= 0 && item.X <= 7 && item.Y >= 0 && item.Y <= 7)
+            {
+                if (Pieces[item.X, item.Y] is Knight && Pieces[item.X, item.Y].Color != Pieces[kingPosition.X, kingPosition.Y].Color)
+                {
+                    var enemyKing = Pieces[kingPosition.X, kingPosition.Y] as King;
+                    enemyKing.Checked(!SelectedPiece.Color);
+                    return true;
+                }
+            }
         }
 
         return false;
